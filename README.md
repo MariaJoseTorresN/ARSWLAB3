@@ -32,6 +32,12 @@ Teniendo en cuenta los conceptos vistos de condición de carrera y sincronizaci�
 - La búsqueda distribuida se detenga (deje de buscar en las listas negras restantes) y retorne la respuesta apenas, en su conjunto, los hilos hayan detectado el número de ocurrencias requerido que determina si un host es confiable o no (_BLACK_LIST_ALARM_COUNT_).
 - Lo anterior, garantizando que no se den condiciones de carrera.
 
+
+
+		Lo que hicimos para lograr que que se detengan es hacer uso de interrupt() para todos los threads que no se ubicen detenido antes de que se interrumpiera.
+
+
+
 ##### Parte III. – Avance para el martes, antes de clase.
 
 Sincronización y Dead-Locks.
@@ -47,11 +53,24 @@ Sincronización y Dead-Locks.
 
 2. Revise el código e identifique cómo se implemento la funcionalidad antes indicada. Dada la intención del juego, un invariante debería ser que la sumatoria de los puntos de vida de todos los jugadores siempre sea el mismo(claro está, en un instante de tiempo en el que no esté en proceso una operación de incremento/reducción de tiempo). Para este caso, para N jugadores, cual debería ser este valor?.
 
+
+		La invariante para N jugadores sera N*(Vida inicial de los N jugadores), ya que esta siempre tiene que estar.
+
+
 3. Ejecute la aplicación y verifique cómo funcionan las opción ‘pause and check’. Se cumple el invariante?.
 
-4. Una primera hipótesis para que se presente la condición de carrera para dicha función (pause and check), es que el programa consulta la lista cuyos valores va a imprimir, a la vez que otros hilos modifican sus valores. Para corregir esto, haga lo que sea necesario para que efectivamente, antes de imprimir los resultados actuales, se pausen todos los demás hilos. Adicionalmente, implemente la opción ‘resume’.
+
+		Se puede apreciar que esta funcion lo que hace es tomar la informacion en el momento que se preciona el boton, y muestra un arreglo de los inmortales, con la vida de cada uno y la suma de todas las vidas, se puede apreciar que esa vida va variando es decir que no es un invariante.
+
+
+4. Una primera hipótesis para que se presente la condición de carrera para dicha función (pause and check), es que el programa consulta la lista cuyos valores va a imprimir, a la vez que otros hilos modifican sus valores. Para corregir esto, haga lo que sea necesario para que efectivamente, antes de imprimir los resultados actuales, se pausen todos los demás hilos. Adicionalmente, implemente la opción ‘resume’.s
 
 5. Verifique nuevamente el funcionamiento (haga clic muchas veces en el botón). Se cumple o no el invariante?.
+
+
+		No todavia el invariante no se cumple se ve que se modifica al tiempo una variable y este se modifica.
+
+
 
 6. Identifique posibles regiones críticas en lo que respecta a la pelea de los inmortales. Implemente una estrategia de bloqueo que evite las condiciones de carrera. Recuerde que si usted requiere usar dos o más ‘locks’ simultáneamente, puede usar bloques sincronizados anidados:
 
@@ -67,11 +86,23 @@ Sincronización y Dead-Locks.
 
 8. Plantee una estrategia para corregir el problema antes identificado (puede revisar de nuevo las páginas 206 y 207 de _Java Concurrency in Practice_).
 
+
+		La estrategia que se implementa es darle un orden al bloqueo de los inmortales por su odern numerico bloqueando primero el menor es decier im0 antes que im5 y de esta forma no crear deadlocks.
+
+
 9. Una vez corregido el problema, rectifique que el programa siga funcionando de manera consistente cuando se ejecutan 100, 1000 o 10000 inmortales. Si en estos casos grandes se empieza a incumplir de nuevo el invariante, debe analizar lo realizado en el paso 4.
+
+		Todo funciona perfecto pero no se recomienda correr tantos inmortales si esta el texto para imprimir en pantalla puesto por que es mucho procesamiento y se muere el pc
+
 
 10. Un elemento molesto para la simulación es que en cierto punto de la misma hay pocos 'inmortales' vivos realizando peleas fallidas con 'inmortales' ya muertos. Es necesario ir suprimiendo los inmortales muertos de la simulación a medida que van muriendo. Para esto:
 	* Analizando el esquema de funcionamiento de la simulación, esto podría crear una condición de carrera? Implemente la funcionalidad, ejecute la simulación y observe qué problema se presenta cuando hay muchos 'inmortales' en la misma. Escriba sus conclusiones al respecto en el archivo RESPUESTAS.txt.
 	* Corrija el problema anterior __SIN hacer uso de sincronización__, pues volver secuencial el acceso a la lista compartida de inmortales haría extremadamente lenta la simulación.
+
+
+		Listo calisto con cholisto
+
+
 
 11. Para finalizar, implemente la opción STOP.
 

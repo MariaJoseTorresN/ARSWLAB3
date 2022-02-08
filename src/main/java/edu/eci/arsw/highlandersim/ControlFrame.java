@@ -29,6 +29,8 @@ public class ControlFrame extends JFrame {
 
     private JPanel contentPane;
 
+    private Object block = new Object();
+
     private List<Immortal> immortals;
 
     private JTextArea output;
@@ -91,6 +93,7 @@ public class ControlFrame extends JFrame {
                 /*
 				 * COMPLETAR
                  */
+                for (Immortal im : immortals)im.pausa();
                 int sum = 0;
                 for (Immortal im : immortals) {
                     sum += im.getHealth();
@@ -112,6 +115,11 @@ public class ControlFrame extends JFrame {
                  * IMPLEMENTAR
                  */
 
+                synchronized(block){
+                    block.notifyAll();
+                }
+
+
             }
         });
 
@@ -126,6 +134,14 @@ public class ControlFrame extends JFrame {
         numOfImmortals.setColumns(10);
 
         JButton btnStop = new JButton("STOP");
+        btnStop.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                for (Immortal in : immortals)in.kill();
+                JOptionPane.showMessageDialog(null,"Fue una gran batalla hasta la proxima");
+                System.exit(0);
+            }
+        });
+
         btnStop.setForeground(Color.RED);
         toolBar.add(btnStop);
 
@@ -152,7 +168,7 @@ public class ControlFrame extends JFrame {
             List<Immortal> il = new LinkedList<Immortal>();
 
             for (int i = 0; i < ni; i++) {
-                Immortal i1 = new Immortal("im" + i, il, DEFAULT_IMMORTAL_HEALTH, DEFAULT_DAMAGE_VALUE,ucb);
+                Immortal i1 = new Immortal("im" + i, il, DEFAULT_IMMORTAL_HEALTH, DEFAULT_DAMAGE_VALUE,ucb,block,i);
                 il.add(i1);
             }
             return il;
